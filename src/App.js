@@ -3,12 +3,17 @@ import './App.css';
 import data from './config';
 function App() {
   const [formError, setFormError] = useState(true);
-  function submitHandler(data) {
-    console.log('formdata', data);
+  const [formData, setFormData] = useState({});
+  function submitHandler(event) {
+    event.preventDefault();
+    console.log(formData, 'formData');
+    localStorage.setItem('formData', JSON.stringify(formData));
   }
-  function inputHandler(e, validation) {
+  function inputHandler(e, validation, name) {
     console.log(e.target.value, 'formdata');
     console.log(validation, 'validation');
+    const data = { ...formData };
+
     if (
       validation &&
       validation.required &&
@@ -17,7 +22,9 @@ function App() {
     ) {
       setFormError(true);
     } else {
+      data[name] = e.target.value;
       setFormError(false);
+      setFormData(data);
     }
   }
 
@@ -34,7 +41,9 @@ function App() {
                   <div>
                     <input
                       type={input.type}
-                      onChange={(e) => inputHandler(e, input.validation)}
+                      onChange={(e) =>
+                        inputHandler(e, input.validation, input.name)
+                      }
                     />
                   </div>
                 ))}
